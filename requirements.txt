@@ -1,0 +1,2 @@
+Pillow
+pixels2svg
