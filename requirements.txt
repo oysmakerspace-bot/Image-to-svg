@@ -1,2 +1,5 @@
 Pillow
 pixels2svg
+flask
+gunicorn
+redis
