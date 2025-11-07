@@ -19,7 +19,9 @@ def worker():
             input_path = job['input_path']
 
             # Update job status
-            redis_conn.set(job_id, json.dumps({'status': 'processing'}))
+            job_data = json.loads(redis_conn.get(job_id))
+            job_data['status'] = 'processing'
+            redis_conn.set(job_id, json.dumps(job_data))
 
             # Get the original filename
             original_filename = "_".join(os.path.basename(input_path).split('_')[1:])
@@ -29,9 +31,13 @@ def worker():
             try:
                 # Perform the conversion
                 pixels2svg(input_path=input_path, output_path=output_path)
-                redis_conn.set(job_id, json.dumps({'status': 'completed', 'output_path': output_path}))
+                job_data['status'] = 'completed'
+                job_data['output_path'] = output_path
+                redis_conn.set(job_id, json.dumps(job_data))
             except Exception as e:
-                redis_conn.set(job_id, json.dumps({'status': 'error', 'message': str(e)}))
+                job_data['status'] = 'error'
+                job_data['message'] = str(e)
+                redis_conn.set(job_id, json.dumps(job_data))
 
         else:
             # If the queue is empty, wait for a short period before checking again
