@@ -30,7 +30,7 @@ class TestApi(unittest.TestCase):
         self.redis_patcher.start()
         self.redis_patcher_worker = patch('api.worker.redis_conn', fake_redis_instance)
         self.redis_patcher_worker.start()
-        self.redis_patcher_queue = patch('api.queue.redis_conn', fake_redis_instance)
+        self.redis_patcher_queue = patch('api.job_queue.redis_conn', fake_redis_instance)
         self.redis_patcher_queue.start()
 
         # Run the worker in a separate thread

@@ -1,7 +1,7 @@
 import os
 import time
 from pixels2svg.main import pixels2svg
-from api.queue import get_job_from_queue
+from api.job_queue import get_job_from_queue
 import redis
 import json
 
