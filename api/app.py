@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import redis
 import json
 
-from api.queue import add_job_to_queue
+from api.job_queue import add_job_to_queue
 
 # Create the Flask application
 app = Flask(__name__)
