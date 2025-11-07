@@ -68,3 +68,16 @@ worker:
   environment:
     - WORKER_SLEEP_TIME=30
 ```
+
+## Contributing
+
+We welcome contributions to this project! To ensure a smooth development process, we have set up a continuous integration (CI) workflow using GitHub Actions.
+
+### Continuous Integration
+
+The CI workflow is defined in the `.github/workflows/ci.yml` file and is triggered automatically on every pull request to the `main` branch. The workflow performs the following checks:
+
+-   **Linting**: Runs `flake8` to enforce code style and catch common errors.
+-   **Testing**: Executes the test suite using `unittest` to ensure that all existing functionality works as expected.
+
+All checks must pass before a pull request can be merged. This helps us maintain a high level of code quality and prevent regressions.
