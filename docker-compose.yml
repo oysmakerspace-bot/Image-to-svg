@@ -8,6 +8,9 @@ services:
     environment:
       - REDIS_HOST=redis
     command: gunicorn -w 4 -b 0.0.0.0:80 api.app:app
+    volumes:
+      - uploads_data:/app/uploads
+      - outputs_data:/app/outputs
 
   worker:
     build: .
@@ -16,6 +19,13 @@ services:
     environment:
       - REDIS_HOST=redis
     command: python api/worker.py
+    volumes:
+      - uploads_data:/app/uploads
+      - outputs_data:/app/outputs
 
   redis:
     image: "redis:alpine"
+
+volumes:
+  uploads_data:
+  outputs_data:
