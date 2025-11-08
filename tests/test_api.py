@@ -91,5 +91,28 @@ class TestApi(unittest.TestCase):
         self.assertTrue(response.data.decode('utf-8').startswith('<?xml version="1.0" encoding="utf-8" ?>'))
         self.assertTrue('<svg' in response.data.decode('utf-8'))
 
+    def test_get_history(self):
+        # Test file upload
+        with open(self.input_file, 'rb') as f:
+            response = self.app.post('/upload', data={'file': (f, self.input_file)})
+        self.assertEqual(response.status_code, 202)
+        data = json.loads(response.data)
+        job_id_1 = data['job_id']
+
+        with open(self.input_file, 'rb') as f:
+            response = self.app.post('/upload', data={'file': (f, self.input_file)})
+        self.assertEqual(response.status_code, 202)
+        data = json.loads(response.data)
+        job_id_2 = data['job_id']
+
+        # Test history endpoint
+        response = self.app.get('/history')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 2)
+        job_ids = [job['job_id'] for job in data]
+        self.assertIn(job_id_1, job_ids)
+        self.assertIn(job_id_2, job_ids)
+
 if __name__ == '__main__':
     unittest.main()

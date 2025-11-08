@@ -56,6 +56,23 @@ This project also provides a web service API for converting images to SVG. The A
 -   `POST /upload`: Upload an image and get a job ID.
 -   `GET /status/<job_id>`: Get the status of a job.
 -   `GET /result/<job_id>`: Get the SVG result of a completed job.
+-   `GET /history`: Get the history of all jobs.
+
+### Example `/history` output:
+```json
+[
+    {
+        "job_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        "status": "completed",
+        "timestamp": "2023-10-27T10:00:00.123456"
+    },
+    {
+        "job_id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+        "status": "queued",
+        "timestamp": "2023-10-27T10:05:00.654321"
+    }
+]
+```
 
 ### Worker Configuration
 

@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import redis
 import json
+from datetime import datetime
 
 from api.job_queue import add_job_to_queue
 
@@ -42,7 +43,8 @@ def upload_file():
         input_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{job_id}_{filename}")
         file.save(input_path)
         add_job_to_queue(job_id, input_path)
-        redis_conn.set(job_id, json.dumps({'status': 'queued'}))
+        redis_conn.set(job_id, json.dumps({'status': 'queued', 'timestamp': datetime.now().isoformat()}))
+        redis_conn.sadd('job_ids', job_id)
         return jsonify({'job_id': job_id}), 202
     else:
         return jsonify({'error': 'File type not allowed'}), 400
@@ -74,6 +76,19 @@ def get_result(job_id):
             return jsonify({'error': 'Job not found'}), 404
     else:
         return jsonify({'error': 'Job not found'}), 404
+
+@app.route('/history', methods=['GET'])
+def get_history():
+    """Get the history of all jobs."""
+    jobs = []
+    job_ids = redis_conn.smembers('job_ids')
+    for job_id in job_ids:
+        job_data = redis_conn.get(job_id)
+        if job_data:
+            job = json.loads(job_data)
+            job['job_id'] = job_id.decode('utf-8')
+            jobs.append(job)
+    return jsonify(jobs)
 
 if __name__ == '__main__':
     app.run(debug=True)
